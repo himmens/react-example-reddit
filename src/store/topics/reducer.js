@@ -3,13 +3,14 @@
 // this is the only way to change the store's state
 // the other exports in this file are selectors, which is business logic that digests parts of the store's state
 // for easier consumption by views
-import _ from 'lodash';
+import _ from "lodash";
 import Immutable from "seamless-immutable";
-import * as types from './actionTypes';
+import * as types from "./actionTypes";
 
 const initialState = Immutable({
     topicsByUrl: undefined,
-    selectedTopicUrls: []
+    selectedTopicUrls: [],
+    selectionFinalized: false
 });
 
 export default function reduce(state = initialState, action = {}) {
@@ -21,6 +22,10 @@ export default function reduce(state = initialState, action = {}) {
         case types.TOPICS_SELECTED:
             return state.merge({
                 selectedTopicUrls: action.selectedTopicUrls
+            });
+        case types.TOPIC_SELECTION_FINALIZED:
+            return state.merge({
+                selectionFinalized: true
             });
         default:
             return state;
@@ -43,4 +48,12 @@ export function getSelectedTopicUrls(state) {
 
 export function getSelectedTopicUrlsMap(state) {
     return _.keyBy(state.topics.selectedTopicUrls);
+}
+
+export function isTopicSelectionValid(state) {
+    return state.topics.selectedTopicUrls.length === 3;
+}
+
+export function isTopicSelectionFinalized(state) {
+    return state.topics.selectionFinalized;
 }
